@@ -9,6 +9,7 @@ import SwiftUI
 
 struct Basic: View {
     @State private var isDone = false
+    @State private var scaleIt = false
     
     var body: some View {
         NavigationStack {
@@ -17,16 +18,24 @@ struct Basic: View {
                     Text("iOS 17 Completion Block")
                     Image(systemName: isDone ? "checkmark.square" : "square")
                         .font(.system(size: 60))
+                        .scaleEffect(scaleIt ? 1.25 : 1)
                         .centered()
                         .onTapGesture {
-                            isDone.toggle()
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                isDone.toggle()
+                                scaleIt.toggle()
+                            } completion: {
+                                withAnimation(.easeInOut(duration: 0.25)) {
+                                    scaleIt.toggle()
+                                }
+                            }
                         }
                 }
                 Section("Basic Phase Animation") {
                     Text("No action taken by user - Continuous")
                         .font(.caption)
                     HStack {
-                        Image(systemName: "hand.thumbs.fill")
+                        Image(systemName: "hand.thumbsup.fill")
                             .font(.system(size: 60))
                         Text("Hello World")
                             .bold()
