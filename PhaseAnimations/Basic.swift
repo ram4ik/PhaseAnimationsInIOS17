@@ -37,11 +37,27 @@ struct Basic: View {
                     HStack {
                         Image(systemName: "hand.thumbsup.fill")
                             .font(.system(size: 60))
+                            .phaseAnimator([true, false]) { content, phase in
+                                content
+                                    .scaleEffect(phase ? 0.5 : 1)
+                                    .rotationEffect(.degrees(phase ? 0 : -180))
+                            } animation: { _ in
+                                    .easeInOut(duration: 0.75)
+                            }
                         Text("Hello World")
                             .bold()
                             .padding()
-                            .foregroundStyle(.red)
-                            .border(.red)
+                            .phaseAnimator([1, 2, 3]) { content, phase in
+                                content
+                                    .foregroundStyle((phase == 1) ? .red : (phase == 2) ? .blue : .green)
+                                    .border((phase == 1) ? .red : (phase == 2) ? .blue : .green)
+                                    .scaleEffect((phase == 3) ? 1.2 : 1)
+                            } animation: { phase in
+                                switch phase {
+                                    case 1, 2: .smooth(duration: 0.5)
+                                    default: .smooth(duration: 1.0)
+                                }
+                            }
                     }
                 }
             }
