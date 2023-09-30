@@ -57,6 +57,15 @@ struct PhaseEnumView: View {
                         .font(.caption)
                     Image(systemName: "timelapse")
                         .foregroundStyle(.blue)
+                        .phaseAnimator(AnimationPhase2.allCases) { content, phase in
+                            content
+                                .scaleEffect(phase.scale)
+                                .offset(y: phase.verticalOffset)
+                                .opacity(phase.opacity)
+                        } animation: { phase in
+                            phase.animation
+                        }
+                        .offset(y: 100)
                         .frame(height: 100)
                         .centered()
                 }
@@ -68,4 +77,38 @@ struct PhaseEnumView: View {
 
 #Preview {
     PhaseEnumView()
+}
+
+enum AnimationPhase2: CaseIterable {
+    case initial, move, scale
+    
+    var verticalOffset: Double {
+        switch self {
+            case .initial: 0
+            case .move, .scale: -100
+        }
+    }
+    
+    var scale: Double {
+        switch self {
+            case .initial: 1.0
+            case .move: 3.0
+            case .scale: 15.0
+        }
+    }
+    
+    var opacity: Double {
+        switch self {
+            case .initial, .move: 1.0
+            case .scale: 0
+        }
+    }
+    
+    var animation: Animation {
+        switch self {
+            case .initial: .smooth
+            case .move: .easeInOut(duration: 0.5)
+            case .scale: .bouncy(duration: 1.0)
+        }
+    }
 }
